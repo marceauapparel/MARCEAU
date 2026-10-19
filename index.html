@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARCEAU - Luxury & Modern Lifestyle Store</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cart-slide { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toast-anim { animation: fadeIn 0.3s ease-out forwards; }
+
+        @keyframes heroZoom {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .hero-bg-anim {
+            animation: heroZoom 20s infinite alternate ease-in-out;
+        }
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+        }
+        @keyframes pulseBadge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+        .badge-pulse { animation: pulseBadge 0.3s ease-in-out; }
+    </style>
+</head>
+<body id="body-root" class="bg-gray-50 font-sans text-gray-800 flex flex-col min-h-screen selection:bg-amber-500 selection:text-black">
+
+    <!-- Sticky Luxury Navbar -->
+    <header class="bg-black backdrop-blur-md shadow-lg sticky top-0 z-40 ">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center gap-4">
+            
+            <!-- Brand Logo -->
+            <a href="#" class="inline-block transition-transform duration-300 hover:scale-105">
+                <img src="https://i.postimg.cc/8zWR6nkd/logo.png" alt="MARCEAU Logo" class="h-10 w-auto object-contain">
+            </a>
+
+            <!-- Search Input -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Search luxury products..." class="w-full pl-11 pr-4 py-2.5 text-sm bg-gray-900 text-white border border-gray-800 rounded-full focus:outline-none focus:border-amber-400 transition placeholder-gray-500 shadow-inner">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+                </div>
+            </div>
+
+            <!-- Header Actions (Track Order, Wishlist & Cart) -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="toggleTrackingModal(true)" class="hidden sm:flex bg-gray-900 text-gray-300 hover:text-white px-3.5 py-2.5 rounded-full text-xs font-semibold items-center gap-1.5 border border-gray-800 transition">
+                    <i class="fa-solid fa-truck-ramp-box text-amber-400"></i> Track Order
+                </button>
+
+                <button onclick="toggleWishlistModal()" class="relative bg-gray-900 text-white p-2.5 rounded-full hover:bg-gray-800 transition border border-gray-800">
+                    <i class="fa-regular fa-heart text-white text-sm"></i>
+                    <span id="wishlist-badge" class="absolute -top-1 -right-1 bg-white text-black text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">0</span>
+                </button>
+
+                <button onclick="toggleCart(true)" class="relative bg-gray-800 text-white px-5 py-2.5 rounded-full font-medium text-sm flex items-center gap-2 hover:bg-gray-700 transition shadow-md transform hover:scale-105 active:scale-95">
+                    <i class="fa-solid fa-bag-shopping text-white"></i>
+                    <span class="hidden sm:inline" id="nav-bag-text">Bag</span>
+                    <span id="cart-badge" class="bg-white text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- FULL-SCREEN HERO SECTION -->
+    <section class="relative h-[85vh] min-h-[550px] w-full overflow-hidden flex items-center justify-center text-white">
+        <div class="absolute inset-0 bg-cover bg-center hero-bg-anim" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('https://i.postimg.cc/L5wPqjry/03.jpg');"></div>
+        
+        <div class="relative max-w-4xl mx-auto px-4 text-center space-y-6 z-10">
+            <h1 class="text-5xl sm:text-7xl font-black tracking-tight uppercase leading-tight drop-shadow-lg" id="hero-title">
+                Elegance Redefined<br><span class="text-amber-400">Exclusively Yours.</span>
+            </h1>
+            <p class="text-gray-200 text-base sm:text-xl max-w-2xl mx-auto font-light leading-relaxed drop-shadow" id="hero-desc">
+                Experience high-end clothing, handcrafted materials, and timeless sophistication delivered directly to your doorstep in Sri Lanka.
+            </p>
+            <div class="pt-4 flex flex-wrap justify-center gap-4">
+                <a href="#products-section" id="btn-shop" class="bg-amber-500 text-black font-bold px-8 py-4 rounded-full hover:bg-amber-400 transition shadow-xl transform hover:-translate-y-1 hover:scale-105 active:scale-95">
+                    Shop Collection
+                </a>
+                <button onclick="toggleTrackingModal(true)" class="bg-white/10 backdrop-blur-md border border-white/30 text-white font-semibold px-8 py-4 rounded-full hover:bg-white/20 transition transform hover:-translate-y-1">
+                    Track Your Order
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Trust Badges Section -->
+    <section class="bg-gray-100 border-b border-gray-100 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="flex flex-col items-center p-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mb-3 shadow-sm">
+                    <i class="fa-solid fa-gem"></i>
+                </div>
+                <h4 class="font-bold text-sm text-gray-900">100% Authentic</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Premium luxury materials</p>
+            </div>
+            <div class="flex flex-col items-center p-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mb-3 shadow-sm">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <h4 class="font-bold text-sm text-gray-900">Island-wide Delivery</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Fast doorstep shipping across SL</p>
+            </div>
+            <div class="flex flex-col items-center p-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mb-3 shadow-sm">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </div>
+                <h4 class="font-bold text-sm text-gray-900">7-Day Returns</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Hassle-free size exchanges</p>
+            </div>
+            <div class="flex flex-col items-center p-4">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mb-3 shadow-sm">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <h4 class="font-bold text-sm text-gray-900">24/7 Concierge</h4>
+                <p class="text-[11px] text-gray-500 mt-1">Dedicated customer support</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories Cards -->
+    <section id="categories-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full">
+        <h2 class="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2" id="cat-subtitle">Curated Collections</h2>
+        <h3 class="text-3xl font-extrabold text-gray-900 mb-8" id="cat-title">Shop by Category</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div onclick="filterCategory('Men')" class="relative h-72 rounded-3xl overflow-hidden group cursor-pointer shadow-md transform transition duration-500 hover:-translate-y-2">
+                <img src="https://i.postimg.cc/fyG3WD9c/06.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                    <h4 class="text-white text-xl font-bold group-hover:text-amber-400 transition">Men's Collection</h4>
+                    <p class="text-gray-300 text-xs mt-1">Oversized Tees & Blazers</p>
+                </div>
+            </div>
+            <div onclick="filterCategory('Women')" class="relative h-72 rounded-3xl overflow-hidden group cursor-pointer shadow-md transform transition duration-500 hover:-translate-y-2">
+                <img src="https://i.postimg.cc/pT1h7DXL/05.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                    <h4 class="text-white text-xl font-bold group-hover:text-amber-400 transition">Women's Collection</h4>
+                    <p class="text-gray-300 text-xs mt-1">Silk Gowns & Suits</p>
+                </div>
+            </div>
+            <div onclick="filterCategory('Fitness')" class="relative h-72 rounded-3xl overflow-hidden group cursor-pointer shadow-md transform transition duration-500 hover:-translate-y-2">
+                <img src="https://i.postimg.cc/k5qbtJhZ/04.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                    <h4 class="text-white text-xl font-bold group-hover:text-amber-400 transition">Fitness & Activewear</h4>
+                    <p class="text-gray-300 text-xs mt-1">Performance Gym Wear</p>
+                </div>
+            </div>
+            <div onclick="filterCategory('Accessories')" class="relative h-72 rounded-3xl overflow-hidden group cursor-pointer shadow-md transform transition duration-500 hover:-translate-y-2">
+                <img src="https://i.postimg.cc/k5JcK3j0/cf1074ad1a89d9f5e4eec8e5e1e72ea3.jpg" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                    <h4 class="text-white text-xl font-bold group-hover:text-amber-400 transition">Luxury Collections</h4>
+                    <p class="text-gray-300 text-xs mt-1">Watches, Belts & Perfumes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Width Monitor Size Slim Promo Banner -->
+    <section class="w-full my-8">
+        <div class="relative w-full h-48 sm:h-60 overflow-hidden flex items-center shadow-xl">
+            <div class="absolute inset-0 bg-cover bg-center transform hover:scale-105 transition duration-700" style="background-image: linear-gradient(to right, rgba(0,0,0,0.85), rgba(0,0,0,0.4)), url('https://i.postimg.cc/fWGf502w/02.jpg');"></div>
+            <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full text-white space-y-2">
+                <span class="bg-amber-500 text-black text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest">Limited Offer</span>
+                <h3 class="text-2xl sm:text-4xl font-black uppercase tracking-tight">New Seasonal Arrivals</h3>
+                <p class="text-xs sm:text-sm text-gray-300 max-w-lg">Use coupon code <strong class="text-amber-400">MARCEAU10</strong> at checkout to get an instant 10% discount on all premium outfits.</p>
+                <div class="pt-2">
+                    <a href="#products-section" class="inline-block bg-white text-black font-bold text-xs px-6 py-2.5 rounded-full hover:bg-amber-400 transition shadow-md">Shop Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Products Section with Enhanced Filters & Price Range Slider -->
+    <main id="products-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow w-full">
+        
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6 border-b border-gray-200 pb-6">
+            <div class="flex flex-wrap gap-2 text-sm">
+                <button onclick="filterCategory('All')" class="cat-btn bg-black text-white px-5 py-2 rounded-full font-medium transition shadow-sm hover:bg-gray-800">All Items</button>
+                <button onclick="filterCategory('Men')" class="cat-btn bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-full font-medium hover:border-black transition">Men's</button>
+                <button onclick="filterCategory('Women')" class="cat-btn bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-full font-medium hover:border-black transition">Women's</button>
+                <button onclick="filterCategory('Fitness')" class="cat-btn bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-full font-medium hover:border-black transition">Fitness</button>
+                <button onclick="filterCategory('Accessories')" class="cat-btn bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-full font-medium hover:border-black transition">Accessories</button>
+            </div>
+
+            <!-- Price Range Slider & Sorting Controls -->
+            <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500 uppercase font-bold whitespace-nowrap">Sort By:</span>
+                    <select id="sort-select" onchange="sortProducts()" class="border border-gray-300 bg-white text-sm rounded-xl px-4 py-2 focus:outline-none focus:border-black cursor-pointer shadow-sm">
+                        <option value="default">Featured</option>
+                        <option value="low-high">Price: Low to High</option>
+                        <option value="high-low">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
+    </main>
+
+    <!-- Recently Viewed Products Section -->
+    <section id="recently-viewed-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full hidden border-t border-gray-200">
+        <h3 class="text-2xl font-bold text-gray-900 mb-6">Recently Viewed Items</h3>
+        <div id="recently-viewed-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"></div>
+    </section>
+
+    <!-- Instagram / Lookbook Gallery Section -->
+    <section class="py-16 bg-gray-100 border-t border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-10">
+            <h2 class="text-xs font-bold text-amber-600 uppercase tracking-widest mb-2">@MARCEAU.LK</h2>
+            <h3 class="text-3xl font-extrabold text-gray-900">Follow Our Style Lookbook</h3>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="relative h-64 rounded-3xl overflow-hidden group shadow-md">
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white"><i class="fa-brands fa-instagram text-3xl"></i></div>
+            </div>
+            <div class="relative h-64 rounded-3xl overflow-hidden group shadow-md">
+                <img src="https://images.unsplash.com/photo-1544441893-675973e31985?w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white"><i class="fa-brands fa-instagram text-3xl"></i></div>
+            </div>
+            <div class="relative h-64 rounded-3xl overflow-hidden group shadow-md">
+                <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white"><i class="fa-brands fa-instagram text-3xl"></i></div>
+            </div>
+            <div class="relative h-64 rounded-3xl overflow-hidden group shadow-md">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white"><i class="fa-brands fa-instagram text-3xl"></i></div>
+            </div>
+        </div>
+    </section>
+
+   
+    <!-- Quick View Modal with Gallery, Color Swatches & Size Selector -->
+    <div id="quick-view-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 relative grid grid-cols-1 md:grid-cols-2 gap-8 shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+            <button onclick="closeQuickView()" class="absolute top-4 right-4 text-gray-400 hover:text-black z-10 text-xl transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex flex-col gap-3">
+                <div class="h-64 bg-gray-100 rounded-2xl overflow-hidden shadow-inner">
+                    <img id="qv-image" src="" class="w-full h-full object-cover transform hover:scale-110 transition duration-500">
+                </div>
+                <!-- Thumbnail Gallery -->
+                <div class="flex gap-2" id="qv-thumbnails"></div>
+            </div>
+            <div class="flex flex-col justify-between">
+                <div>
+                    <span id="qv-category" class="text-xs font-bold text-amber-600 uppercase tracking-widest"></span>
+                    <h3 id="qv-name" class="text-2xl font-black text-gray-900 mt-1 mb-2"></h3>
+                    <p id="qv-price" class="text-xl font-extrabold text-amber-600 mb-3"></p>
+                    <p id="qv-desc" class="text-xs text-gray-600 leading-relaxed mb-4"></p>
+                    
+                    <!-- Color Swatches Selection -->
+                    <div class="mb-4">
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Color Variant</label>
+                        <div class="flex gap-2.5" id="color-swatches">
+                            <button onclick="selectColor(this, 'Noir Black')" class="w-6 h-6 rounded-full bg-black ring-2 ring-offset-2 ring-amber-500 transition"></button>
+                            <button onclick="selectColor(this, 'Cream White')" class="w-6 h-6 rounded-full bg-stone-200 ring-1 ring-gray-300 transition"></button>
+                            <button onclick="selectColor(this, 'Slate Navy')" class="w-6 h-6 rounded-full bg-slate-800 ring-1 ring-gray-300 transition"></button>
+                        </div>
+                    </div>
+
+                    <!-- Clothing Size Selector -->
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider">Select Size</label>
+                            <button onclick="toggleSizeChart(true)" class="text-[10px] font-bold text-amber-600 underline">Size Guide</button>
+                        </div>
+                        <div class="flex gap-2" id="size-buttons">
+                            <button onclick="selectSize(this)" class="px-3 py-1.5 border border-gray-300 text-xs font-bold rounded-lg hover:border-black transition">S</button>
+                            <button onclick="selectSize(this)" class="px-3 py-1.5 border border-amber-500 text-xs font-bold rounded-lg bg-black text-amber-400 transition">M</button>
+                            <button onclick="selectSize(this)" class="px-3 py-1.5 border border-gray-300 text-xs font-bold rounded-lg hover:border-black transition">L</button>
+                            <button onclick="selectSize(this)" class="px-3 py-1.5 border border-gray-300 text-xs font-bold rounded-lg hover:border-black transition">XL</button>
+                            <button onclick="selectSize(this)" class="px-3 py-1.5 border border-gray-300 text-xs font-bold rounded-lg hover:border-black transition">XXL</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="qv-add-btn" class="w-full bg-black text-white font-bold py-3.5 rounded-2xl hover:bg-gray-800 transition flex items-center justify-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-bag-shopping"></i> Add to Bag
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Tracking Modal -->
+    <div id="tracking-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+            <button onclick="toggleTrackingModal(false)" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-2 text-xl">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <h3 class="text-2xl font-black text-gray-900">Track Your Order</h3>
+                <p class="text-xs text-gray-500 mt-1">Enter your Order ID (e.g., MRC-1001) to check delivery status.</p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex gap-2">
+                    <input type="text" id="track-input" placeholder="Enter Order ID (e.g. MRC-1001)" class="border border-gray-300 rounded-xl px-4 py-3 text-xs w-full focus:outline-none focus:border-black uppercase">
+                    <button onclick="trackOrder()" class="bg-black text-white text-xs font-bold px-5 py-3 rounded-xl hover:bg-gray-800 transition shadow-md">Track</button>
+                </div>
+                <p class="text-[10px] text-gray-400 text-center">Tip: You can use sample ID <strong class="text-amber-600">MRC-1001</strong> or <strong class="text-amber-600">MRC-1002</strong> for testing.</p>
+            </div>
+
+            <div id="track-result" class="mt-6 hidden space-y-4 border-t border-gray-100 pt-4 animate-[fadeIn_0.3s_ease-out]"></div>
+        </div>
+    </div>
+
+    <!-- Size Chart Modal -->
+    <div id="size-chart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 relative shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+            <button onclick="toggleSizeChart(false)" class="absolute top-4 right-4 text-gray-400 hover:text-black">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-xl font-bold mb-2 uppercase tracking-wider">MARCEAU Size Guide</h3>
+            <p class="text-xs text-gray-500 mb-4">Apparel measurements in inches.</p>
+
+            <table class="w-full text-xs text-left border-collapse border border-gray-200">
+                <thead>
+                    <tr class="bg-gray-100 uppercase text-[10px]">
+                        <th class="border border-gray-200 p-2">Size</th>
+                        <th class="border border-gray-200 p-2">Chest</th>
+                        <th class="border border-gray-200 p-2">Waist</th>
+                        <th class="border border-gray-200 p-2">Length</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="border border-gray-200 p-2 font-bold">S</td><td class="border border-gray-200 p-2">36 - 38"</td><td class="border border-gray-200 p-2">30 - 32"</td><td class="border border-gray-200 p-2">27"</td></tr>
+                    <tr><td class="border border-gray-200 p-2 font-bold">M</td><td class="border border-gray-200 p-2">38 - 40"</td><td class="border border-gray-200 p-2">32 - 34"</td><td class="border border-gray-200 p-2">28"</td></tr>
+                    <tr><td class="border border-gray-200 p-2 font-bold">L</td><td class="border border-gray-200 p-2">40 - 42"</td><td class="border border-gray-200 p-2">34 - 36"</td><td class="border border-gray-200 p-2">29"</td></tr>
+                    <tr><td class="border border-gray-200 p-2 font-bold">XL</td><td class="border border-gray-200 p-2">42 - 44"</td><td class="border border-gray-200 p-2">36 - 38"</td><td class="border border-gray-200 p-2">30"</td></tr>
+                    <tr><td class="border border-gray-200 p-2 font-bold">XXL</td><td class="border border-gray-200 p-2">44 - 46"</td><td class="border border-gray-200 p-2">38 - 40"</td><td class="border border-gray-200 p-2">31"</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlist-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 relative shadow-2xl animate-[fadeIn_0.3s_ease-out]">
+            <button onclick="toggleWishlistModal()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-xl font-bold mb-4 text-gray-900 flex items-center gap-2"><i class="fa-solid fa-heart text-red-500"></i> Your Wishlist</h3>
+            <div id="wishlist-items" class="space-y-4 max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- Slide-over Cart Drawer -->
+    <div id="cart-overlay" onclick="toggleCart(false)" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden transition-opacity duration-300"></div>
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full cart-slide flex flex-col">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+            <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-bag-shopping text-amber-500"></i> Your Shopping Bag</h3>
+            <button onclick="toggleCart(false)" class="text-gray-400 hover:text-black text-xl transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div id="cart-items" class="p-6 flex-grow overflow-y-auto space-y-4"></div>
+
+        <div class="p-6 border-t border-gray-200 bg-gray-50 space-y-3">
+            <div class="flex gap-2">
+                <input type="text" id="promo-code" placeholder="Promo Code (e.g. MARCEAU10)" class="border border-gray-300 text-xs rounded-xl px-3 py-2 w-full focus:outline-none focus:border-black">
+                <button onclick="applyPromoCode()" class="bg-black text-white text-xs font-bold px-4 py-2 rounded-xl hover:bg-gray-800 transition">Apply</button>
+            </div>
+
+            <div class="space-y-1 text-xs text-gray-600 border-t border-gray-200 pt-2">
+                <div class="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal" class="font-semibold text-gray-900">Rs. 0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Delivery Fee:</span>
+                    <span id="delivery-fee-display" class="font-semibold text-gray-900">Rs. 350</span>
+                </div>
+            </div>
+
+            <div class="flex justify-between text-lg font-bold text-gray-900 border-t border-gray-200 pt-2">
+                <span>Total Amount:</span>
+                <span id="cart-total" class="text-amber-600">Rs. 0</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-2 pt-1">
+                <button onclick="openCheckout()" class="w-full bg-black text-white py-3 rounded-xl font-bold text-xs hover:bg-gray-800 transition shadow-md">Checkout</button>
+                <button onclick="orderViaWhatsApp()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold text-xs hover:bg-green-500 transition shadow-md flex items-center justify-center gap-1.5"><i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal with Sri Lankan District Delivery Calculation -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl animate-[fadeIn_0.3s_ease-out] max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckout()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold mb-2 text-gray-900">Secure Checkout</h3>
+            <p class="text-xs text-gray-500 mb-6">Complete your luxury order with MARCEAU across Sri Lanka.</p>
+            
+            <form onsubmit="placeOrder(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Full Name</label>
+                        <input type="text" id="order-name" required class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:border-black transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Phone Number</label>
+                        <input type="tel" id="order-phone" required class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:border-black transition" placeholder="07xxxxxxxx">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Delivery Region / District</label>
+                    <select id="order-district" onchange="updateDeliveryFee()" class="w-full border border-gray-300 rounded-xl p-3 text-sm bg-white focus:outline-none focus:border-black transition cursor-pointer">
+                        <option value="colombo">Colombo District (Rs. 350)</option>
+                        <option value="gampaha">Gampaha / Kalutara (Rs. 450)</option>
+                        <option value="outstation">Outstation / Other Provinces (Rs. 600)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Delivery Address</label>
+                    <textarea id="order-address" required rows="2" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:border-black transition" placeholder="House No, Street, City"></textarea>
+                </div>
+
+                <div class="pt-2">
+                    <label class="block text-xs font-semibold text-gray-600 uppercase mb-2">Payment Method</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="border border-gray-300 rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:border-black transition bg-gray-50">
+                            <input type="radio" name="payment" value="cod" checked onclick="togglePaymentFields('cod')">
+                            <span class="text-xs font-bold">Cash on Delivery</span>
+                        </label>
+                        <label class="border border-gray-300 rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:border-black transition bg-gray-50">
+                            <input type="radio" name="payment" value="card" onclick="togglePaymentFields('card')">
+                            <span class="text-xs font-bold">Credit/Debit Card</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="card-details-container" class="hidden space-y-3 p-4 bg-gray-50 rounded-2xl border border-gray-200 animate-[fadeIn_0.3s_ease-out]">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Card Number</label>
+                        <div class="relative">
+                            <input type="text" placeholder="4242 •••• •••• ••••" maxlength="19" class="w-full border border-gray-300 rounded-xl p-2.5 text-xs bg-white focus:outline-none focus:border-black transition">
+                            <i class="fa-solid fa-credit-card absolute right-3 top-3 text-gray-400 text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" maxlength="5" class="w-full border border-gray-300 rounded-xl p-2.5 text-xs bg-white focus:outline-none focus:border-black transition">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">CVV</label>
+                            <input type="password" placeholder="123" maxlength="4" class="w-full border border-gray-300 rounded-xl p-2.5 text-xs bg-white focus:outline-none focus:border-black transition">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-amber-500 text-black font-bold py-3.5 rounded-xl hover:bg-amber-400 transition mt-2 shadow-md">Confirm Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Success Receipt Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 relative shadow-2xl animate-[fadeIn_0.3s_ease-out] text-center">
+            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-2xl font-black text-gray-900 mb-1">Order Confirmed!</h3>
+            <p class="text-xs text-gray-500 mb-4">Thank you for shopping with MARCEAU.</p>
+            
+            <div id="receipt-details" class="bg-gray-50 rounded-2xl p-4 text-left text-xs space-y-2 mb-6 border border-gray-200"></div>
+
+            <button onclick="closeSuccessModal()" class="w-full bg-black text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition shadow-md text-sm">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- Newsletter Popup Modal -->
+    <div id="newsletter-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 relative shadow-2xl animate-[fadeIn_0.3s_ease-out] text-center">
+            <button onclick="closeNewsletter()" class="absolute top-4 right-4 text-gray-400 hover:text-black transition">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <span class="text-xs font-bold text-amber-600 uppercase tracking-widest">Special Offer</span>
+            <h3 class="text-2xl font-black text-gray-900 mt-1 mb-2">Get 10% Off</h3>
+            <p class="text-xs text-gray-600 mb-6">Subscribe to our newsletter and use code <strong class="text-black">MARCEAU10</strong> on your first order.</p>
+            
+            <form onsubmit="handleNewsletter(event)" class="space-y-3">
+                <input type="email" required placeholder="Enter your email address..." class="w-full border border-gray-300 rounded-xl p-3 text-xs focus:outline-none focus:border-black transition">
+                <button type="submit" class="w-full bg-amber-500 text-black font-bold py-3 rounded-xl hover:bg-amber-400 transition shadow-md text-xs uppercase tracking-wider">Claim 10% Off</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Live Chat Widget -->
+    <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+        <div id="chat-box" class="hidden bg-white w-80 rounded-3xl shadow-2xl border border-gray-200 mb-4 overflow-hidden animate-[fadeIn_0.3s_ease-out]">
+            <div class="bg-black text-white p-4 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="font-bold text-xs uppercase tracking-wider">MARCEAU Support</span>
+                </div>
+                <button onclick="toggleChat()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-4 h-64 overflow-y-auto text-xs space-y-3 bg-gray-50" id="chat-messages">
+                <div class="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 max-w-[85%]">
+                    Hello! Welcome to MARCEAU. How can we assist you with your luxury shopping today?
+                </div>
+            </div>
+            <div class="p-3 bg-white border-t border-gray-200 flex gap-2">
+                <input type="text" id="chat-input" placeholder="Type a message..." class="border border-gray-300 rounded-xl px-3 py-2 text-xs w-full focus:outline-none focus:border-black">
+                <button onclick="sendChatMessage()" class="bg-black text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-gray-800 transition"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button onclick="toggleChat()" class="bg-black text-white p-4 rounded-full shadow-2xl transition-transform duration-300 hover:scale-110 flex items-center justify-center border border-gray-800">
+            <i class="fa-solid fa-comments text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 left-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Luxury Footer -->
+    <footer class="bg-black text-gray-400 py-16 border-t border-gray-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
+            <div class="space-y-3">
+                <img src="https://i.postimg.cc/8zWR6nkd/logo.png" alt="MARCEAU Logo" class="h-10 w-auto object-contain">
+                <p class="text-gray-500 text-xs">Elevating fashion & luxury apparel in Sri Lanka.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#products-section" class="hover:text-amber-400 transition">Shop Collection</a></li>
+                    <li><a href="#" onclick="toggleTrackingModal(true); return false;" class="hover:text-amber-400 transition">Track Order</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-3">Customer Care</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" class="hover:text-amber-400 transition">Contact Support</a></li>
+                    <li><a href="#" class="hover:text-amber-400 transition">Shipping Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-3">Newsletter</h4>
+                <p class="text-xs text-gray-500 mb-3">Subscribe to receive exclusive offers.</p>
+                <div class="flex gap-2">
+                    <input type="email" placeholder="Your email..." class="bg-gray-900 border border-gray-800 text-xs rounded-lg px-3 py-2 w-full text-white focus:outline-none">
+                    <button class="bg-amber-500 text-black font-bold text-xs px-3 py-2 rounded-lg hover:bg-amber-400 transition">Join</button>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-xs text-gray-600 mt-12 border-t border-gray-900 pt-6">
+            &copy; 2026 MARCEAU Luxury Store. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const products = [
+            { id: 1, name: "Noir Heavyweight Oversized Tee", price: 6500, category: "Men", rating: 4.9, images: ["https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&q=80", "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&q=80", "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80"], desc: "Made from 280GSM 100% organic French Terry cotton with drop shoulder boxy fit." },
+            { id: 2, name: "Executive Tailored Wool Blazer", price: 24500, category: "Men", rating: 4.8, images: ["https://images.unsplash.com/photo-1544441893-675973e31985?w=800&q=80", "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&q=80", "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=800&q=80"], desc: "Single-breasted Italian wool blend blazer with structured shoulders." },
+            { id: 3, name: "Silk Evening Cocktail Dress", price: 18500, category: "Women", rating: 4.9, images: ["https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80", "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=80", "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800&q=80"], desc: "Pure Mulberry silk slip dress with elegant cowl neckline." },
+            { id: 4, name: "Monochrome Essential Hoodie", price: 11500, category: "Men", rating: 4.8, images: ["https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&q=80", "https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=800&q=80", "https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=800&q=80"], desc: "400GSM fleece-lined heavyweight pullover hoodie with double-layered hood." },
+            { id: 5, name: "Classic Trench Coat Beige", price: 28000, category: "Women", rating: 4.9, images: ["https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800&q=80", "https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=800&q=80", "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80"], desc: "Double-breasted water-resistant cotton gabardine trench coat." },
+            { id: 6, name: "Satin Silk Button-Up Shirt", price: 12500, category: "Women", rating: 4.7, images: ["https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800&q=80", "https://images.unsplash.com/photo-1534126511673-b6899657816a?w=800&q=80", "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80"], desc: "Fluid luxury silk-satin formal shirt with mother-of-pearl buttons." },
+            { id: 7, name: "Pro-Performance Gym Training Tee", price: 4500, category: "Fitness", rating: 4.8, images: ["https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&q=80", "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&q=80", "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80"], desc: "Moisture-wicking breathable athletic t-shirt designed for intense workouts." },
+            { id: 8, name: "Athletic Compression Joggers", price: 8500, category: "Fitness", rating: 4.9, images: ["https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&q=80", "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&q=80", "https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=800&q=80"], desc: "Flexible, stretchable gym joggers with zip pockets for maximum mobility." },
+            { id: 9, name: "Luxury Chronograph Wristwatch", price: 35000, category: "Accessories", rating: 5.0, images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80", "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=800&q=80", "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?w=800&q=80"], desc: "Stainless steel luxury chronograph watch with sapphire crystal glass." },
+            { id: 10, name: "Italian Leather Minimalist Belt", price: 9500, category: "Accessories", rating: 4.7, images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80", "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&q=80", "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&q=80"], desc: "Handcrafted full-grain Italian leather belt with a matte black buckle." }
+        ];
+
+        let cart = [];
+        let wishlist = [];
+        let recentlyViewed = [];
+        let activeCategory = 'All';
+        let discountApplied = false;
+        let selectedClothingSize = 'M';
+        let selectedColorVariant = 'Noir Black';
+
+        // Sample Orders Database for tracking
+        const sampleOrders = {
+            "MRC-1001": { customer: "Kasun Perera", status: "Out for Delivery", date: "Oct 18, 2026", items: "Noir Heavyweight Oversized Tee (M)", courier: "Prompt Express (SL)" },
+            "MRC-1002": { customer: "Nirosha Silva", status: "Packed & Ready", date: "Oct 19, 2026", items: "Silk Evening Cocktail Dress (S)", courier: "Koombiyo Delivery" }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('newsletter-modal').classList.remove('hidden');
+            }, 3000);
+            updateCartUI();
+        });
+
+        function closeNewsletter() {
+            document.getElementById('newsletter-modal').classList.add('hidden');
+        }
+
+        function handleNewsletter(e) {
+            e.preventDefault();
+            closeNewsletter();
+            showToast("Successfully subscribed! Use code MARCEAU10 for 10% off.");
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-black text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg toast-anim flex items-center gap-2 border border-gray-800";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-amber-400"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function toggleChat() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.classList.toggle('hidden');
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            const messagesContainer = document.getElementById('chat-messages');
+            messagesContainer.innerHTML += `<div class="bg-black text-white p-3 rounded-2xl shadow-sm max-w-[85%] ml-auto text-right">${msg}</div>`;
+            input.value = '';
+
+            setTimeout(() => {
+                messagesContainer.innerHTML += `<div class="bg-white border border-gray-100 p-3 rounded-2xl shadow-sm max-w-[85%]">Thank you for your message! Our concierge will assist you shortly.</div>`;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 1000);
+        }
+
+        function selectSize(btn) {
+            const sizeBtns = document.querySelectorAll('#size-buttons button');
+            sizeBtns.forEach(b => {
+                b.className = "px-3 py-1.5 border border-gray-300 text-xs font-bold rounded-lg hover:border-black transition";
+            });
+            btn.className = "px-3 py-1.5 border border-amber-500 text-xs font-bold rounded-lg bg-black text-amber-400 transition";
+            selectedClothingSize = btn.innerText;
+        }
+
+        function selectColor(btn, colorName) {
+            const colorBtns = document.querySelectorAll('#color-swatches button');
+            colorBtns.forEach(b => {
+                b.className = b.className.replace('ring-2 ring-offset-2 ring-amber-500', 'ring-1 ring-gray-300');
+            });
+            btn.className = btn.className.replace('ring-1 ring-gray-300', 'ring-2 ring-offset-2 ring-amber-500');
+            selectedColorVariant = colorName;
+        }
+
+        function toggleSizeChart(open) {
+            const chart = document.getElementById('size-chart-modal');
+            if (open) chart.classList.remove('hidden');
+            else chart.classList.add('hidden');
+        }
+
+        function toggleTrackingModal(open) {
+            const modal = document.getElementById('tracking-modal');
+            if (open) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        function trackOrder() {
+            const orderId = document.getElementById('track-input').value.trim().toUpperCase();
+            const resultBox = document.getElementById('track-result');
+            resultBox.classList.remove('hidden');
+
+            if (!orderId) {
+                resultBox.innerHTML = `<p class="text-xs text-red-500 font-semibold text-center">Please enter a valid Order ID.</p>`;
+                return;
+            }
+
+            const order = sampleOrders[orderId];
+            if (order) {
+                resultBox.innerHTML = `
+                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 text-xs space-y-2">
+                        <div class="flex justify-between items-center pb-2 border-b border-gray-200">
+                            <span class="font-bold text-gray-900">${orderId}</span>
+                            <span class="bg-amber-100 text-amber-700 font-bold px-2.5 py-1 rounded-full text-[10px]">${order.status}</span>
+                        </div>
+                        <p><strong>Customer:</strong> ${order.customer}</p>
+                        <p><strong>Items:</strong> ${order.items}</p>
+                        <p><strong>Order Date:</strong> ${order.date}</p>
+                        <p><strong>Courier Partner:</strong> ${order.courier}</p>
+                    </div>
+                `;
+            } else {
+                resultBox.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-xs text-center text-red-600">
+                        No order found with ID <strong>${orderId}</strong>. Please check your Order ID and try again (Try: MRC-1001).
+                    </div>
+                `;
+            }
+        }
+
+        function toggleWishlist(id) {
+            if (wishlist.includes(id)) {
+                wishlist = wishlist.filter(item => item !== id);
+                showToast("Removed from Wishlist");
+            } else {
+                wishlist.push(id);
+                showToast("Added to Wishlist");
+            }
+            document.getElementById('wishlist-badge').innerText = wishlist.length;
+            applyFiltersAndSort();
+        }
+
+        function toggleWishlistModal() {
+            const modal = document.getElementById('wishlist-modal');
+            modal.classList.toggle('hidden');
+            renderWishlistItems();
+        }
+
+        function renderWishlistItems() {
+            const container = document.getElementById('wishlist-items');
+            container.innerHTML = '';
+            if (wishlist.length === 0) {
+                container.innerHTML = `<p class="text-gray-500 text-center py-6 text-sm">Your wishlist is empty.</p>`;
+                return;
+            }
+            wishlist.forEach(id => {
+                const p = products.find(prod => prod.id === id);
+                if (p) {
+                    container.innerHTML += `
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <div class="flex items-center gap-3">
+                                <img src="${p.images[0]}" class="w-12 h-12 object-cover rounded-xl">
+                                <div>
+                                    <h5 class="font-bold text-sm">${p.name}</h5>
+                                    <p class="text-xs text-amber-600 font-bold">Rs. ${p.price.toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <button onclick="addToCart(${p.id}, '${selectedClothingSize}', '${selectedColorVariant}'); toggleWishlistModal();" class="bg-black text-white text-xs px-3 py-1.5 rounded-lg font-bold">Add to Bag</button>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function renderProducts(itemsToRender) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            if (itemsToRender.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500">No apparel found matching your criteria.</div>`;
+                return;
+            }
+
+            itemsToRender.forEach(p => {
+                const isFav = wishlist.includes(p.id);
+                grid.innerHTML += `
+                    <div class="product-card bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between group">
+                        <div class="relative overflow-hidden bg-gray-100 h-72 cursor-pointer" onclick="openQuickView(${p.id})">
+                            <img src="${p.images[0]}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-xs font-bold px-3 py-1 rounded-full shadow-sm">${p.category}</span>
+                            
+                            <button onclick="event.stopPropagation(); toggleWishlist(${p.id})" class="absolute top-3 right-3 bg-white/90 backdrop-blur-md p-2 rounded-full shadow-sm text-gray-700 hover:text-red-500 transition transform hover:scale-110">
+                                <i class="${isFav ? 'fa-solid text-red-500' : 'fa-regular'} fa-heart text-sm"></i>
+                            </button>
+
+                            <span class="absolute bottom-3 right-3 bg-black/80 text-white text-xs px-2.5 py-1 rounded-lg"><i class="fa-solid fa-star text-amber-400 text-[10px]"></i> ${p.rating}</span>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <h4 onclick="openQuickView(${p.id})" class="font-bold text-gray-900 text-lg mb-1 cursor-pointer hover:text-amber-600 transition">${p.name}</h4>
+                                <p class="text-amber-600 font-black text-xl">Rs. ${p.price.toLocaleString()}</p>
+                            </div>
+                            <button onclick="addToCart(${p.id}, 'M', 'Noir Black')" class="w-full mt-5 bg-black text-white py-3 rounded-2xl font-bold text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 shadow-sm transform active:scale-95">
+                                <i class="fa-solid fa-plus text-xs"></i> Add to Bag
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openQuickView(id) {
+            const product = products.find(p => p.id === id);
+            
+            if (!recentlyViewed.includes(id)) {
+                recentlyViewed.unshift(id);
+                if (recentlyViewed.length > 4) recentlyViewed.pop();
+                renderRecentlyViewed();
+            }
+
+            document.getElementById('qv-image').src = product.images[0];
+            document.getElementById('qv-category').innerText = product.category;
+            document.getElementById('qv-name').innerText = product.name;
+            document.getElementById('qv-price').innerText = `Rs. ${product.price.toLocaleString()}`;
+            document.getElementById('qv-desc').innerText = product.desc;
+            
+            const thumbContainer = document.getElementById('qv-thumbnails');
+            thumbContainer.innerHTML = '';
+            product.images.forEach((imgUrl) => {
+                thumbContainer.innerHTML += `
+                    <div onclick="document.getElementById('qv-image').src='${imgUrl}'" class="w-16 h-16 rounded-xl overflow-hidden cursor-pointer border-2 border-transparent hover:border-amber-500 transition shadow-sm">
+                        <img src="${imgUrl}" class="w-full h-full object-cover">
+                    </div>
+                `;
+            });
+
+            const addBtn = document.getElementById('qv-add-btn');
+            addBtn.onclick = () => {
+                addToCart(product.id, selectedClothingSize, selectedColorVariant);
+                closeQuickView();
+            };
+
+            document.getElementById('quick-view-modal').classList.remove('hidden');
+        }
+
+        function renderRecentlyViewed() {
+            const section = document.getElementById('recently-viewed-section');
+            const grid = document.getElementById('recently-viewed-grid');
+            if (recentlyViewed.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+            section.classList.remove('hidden');
+            grid.innerHTML = '';
+            recentlyViewed.forEach(id => {
+                const p = products.find(prod => prod.id === id);
+                if (p) {
+                    grid.innerHTML += `
+                        <div onclick="openQuickView(${p.id})" class="bg-white p-4 rounded-2xl border border-gray-200 cursor-pointer shadow-sm hover:shadow-md transition">
+                            <img src="${p.images[0]}" class="w-full h-40 object-cover rounded-xl mb-2">
+                            <h5 class="font-bold text-xs truncate text-gray-900">${p.name}</h5>
+                            <p class="text-xs text-amber-600 font-bold">Rs. ${p.price.toLocaleString()}</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function closeQuickView() {
+            document.getElementById('quick-view-modal').classList.add('hidden');
+        }
+
+        function addToCart(productId, size = 'M', color = 'Noir Black') {
+            const product = products.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId && item.size === size && item.color === color);
+
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, image: product.images[0], qty: 1, size: size, color: color });
+            }
+            updateCartUI();
+            
+            const cartBadge = document.getElementById('cart-badge');
+            cartBadge.classList.add('badge-pulse');
+            setTimeout(() => cartBadge.classList.remove('badge-pulse'), 300);
+
+            showToast(`${product.name} (${size}, ${color}) added to your bag!`);
+        }
+
+        function updateQty(id, size, color, change) {
+            const item = cart.find(i => i.id === id && i.size === size && i.color === color);
+            if (item) {
+                item.qty += change;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => !(i.id === id && i.size === size && i.color === color));
+                }
+                updateCartUI();
+            }
+        }
+
+        function removeFromCart(id, size, color) {
+            cart = cart.filter(item => !(item.id === id && item.size === size && item.color === color));
+            updateCartUI();
+            showToast("Item removed from bag");
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promo-code').value.trim();
+            if (code === 'MARCEAU10') {
+                discountApplied = true;
+                showToast("Promo code applied! 10% discount added.");
+                updateCartUI();
+            } else {
+                alert("Invalid promo code! Use MARCEAU10");
+            }
+        }
+
+        function getDeliveryFee() {
+            const district = document.getElementById('order-district') ? document.getElementById('order-district').value : 'colombo';
+            if (district === 'colombo') return 350;
+            if (district === 'gampaha') return 450;
+            return 600;
+        }
+
+        function updateDeliveryFee() {
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartBadge = document.getElementById('cart-badge');
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            const deliveryFeeDisplay = document.getElementById('delivery-fee-display');
+            const cartTotal = document.getElementById('cart-total');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            let subtotalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            if (discountApplied) {
+                subtotalPrice *= 0.9;
+            }
+
+            const deliveryFee = cart.length > 0 ? getDeliveryFee() : 0;
+            const finalTotal = subtotalPrice + (cart.length > 0 ? deliveryFee : 0);
+
+            cartBadge.innerText = totalItems;
+            if (cartSubtotal) cartSubtotal.innerText = `Rs. ${Math.round(subtotalPrice).toLocaleString()}`;
+            if (deliveryFeeDisplay) deliveryFeeDisplay.innerText = `Rs. ${deliveryFee.toLocaleString()}`;
+            if (cartTotal) cartTotal.innerText = `Rs. ${Math.round(finalTotal).toLocaleString()}`;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = `<p class="text-gray-500 text-center py-12">Your shopping bag is currently empty.</p>`;
+                return;
+            }
+
+            cartItemsContainer.innerHTML = '';
+            cart.forEach(item => {
+                cartItemsContainer.innerHTML += `
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-4 gap-3 animate-[fadeIn_0.3s_ease-out]">
+                        <img src="${item.image}" class="w-16 h-16 object-cover rounded-2xl border shadow-sm">
+                        <div class="flex-grow">
+                            <h5 class="font-semibold text-sm">${item.name}</h5>
+                            <div class="flex items-center gap-2 text-[10px] font-bold text-amber-600 uppercase">
+                                <span>Size: ${item.size}</span> • <span>Color: ${item.color}</span>
+                            </div>
+                            <p class="text-xs text-amber-600 font-bold mt-0.5">Rs. ${item.price.toLocaleString()}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="updateQty(${item.id}, '${item.size}', '${item.color}', -1)" class="w-6 h-6 bg-gray-100 rounded-md font-bold hover:bg-gray-200 text-xs flex items-center justify-center transition">-</button>
+                                <span class="text-xs font-semibold">${item.qty}</span>
+                                <button onclick="updateQty(${item.id}, '${item.size}', '${item.color}', 1)" class="w-6 h-6 bg-gray-100 rounded-md font-bold hover:bg-gray-200 text-xs flex items-center justify-center transition">+</button>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${item.id}, '${item.size}', '${item.color}')" class="text-gray-400 hover:text-red-600 text-sm p-2 transition transform hover:scale-110">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleCart(open) {
+            const drawer = document.getElementById('cart-drawer');
+            const overlay = document.getElementById('cart-overlay');
+            if (open) {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            const buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(cat)) {
+                    btn.className = "cat-btn bg-black text-white px-5 py-2 rounded-full font-medium transition shadow-sm";
+                } else {
+                    btn.className = "cat-btn bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-full font-medium hover:border-black transition";
+                }
+            });
+            applyFiltersAndSort();
+        }
+
+        function filterProducts() {
+            const slider = document.getElementById('price-range');
+            const sliderValElem = document.getElementById('price-slider-value');
+            if (slider && sliderValElem) {
+                sliderValElem.innerText = `Rs. ${parseInt(slider.value).toLocaleString()}`;
+            }
+            applyFiltersAndSort();
+        }
+
+        function sortProducts() {
+            applyFiltersAndSort();
+        }
+
+        function applyFiltersAndSort() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const sortVal = document.getElementById('sort-select').value;
+            const maxPrice = document.getElementById('price-range') ? parseInt(document.getElementById('price-range').value) : 40000;
+
+            let result = activeCategory === 'All' ? [...products] : products.filter(p => p.category === activeCategory);
+
+            if (query) {
+                result = result.filter(p => p.name.toLowerCase().includes(query));
+            }
+
+            // Price Range Filter
+            result = result.filter(p => p.price <= maxPrice);
+
+            if (sortVal === 'low-high') {
+                result.sort((a, b) => a.price - b.price);
+            } else if (sortVal === 'high-low') {
+                result.sort((a, b) => b.price - a.price);
+            }
+
+            renderProducts(result);
+        }
+
+        function togglePaymentFields(method) {
+            const cardContainer = document.getElementById('card-details-container');
+            if (method === 'card') {
+                cardContainer.classList.remove('hidden');
+            } else {
+                cardContainer.classList.add('hidden');
+            }
+        }
+
+        function openCheckout() {
+            if (cart.length === 0) {
+                alert("Your bag is empty!");
+                return;
+            }
+            toggleCart(false);
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function orderViaWhatsApp() {
+            if (cart.length === 0) {
+                alert("Your bag is empty!");
+                return;
+            }
+            
+            let message = "Hello MARCEAU, I would like to place an order:%0A%0A";
+            cart.forEach((item, index) => {
+                message += `${index + 1}. ${item.name} (Size: ${item.size}, Color: ${item.color}) - Qty: ${item.qty} - Rs. ${(item.price * item.qty).toLocaleString()}%0A`;
+            });
+            
+            const total = document.getElementById('cart-total').innerText;
+            message += `%0A*Total Amount (incl. Delivery): ${total}*%0A%0APlease confirm my order.`;
+            
+            const whatsappNumber = "94773199646"; 
+            window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+        }
+
+        function placeOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('order-name').value;
+            const phone = document.getElementById('order-phone').value;
+            const address = document.getElementById('order-address').value;
+            const districtElem = document.getElementById('order-district');
+            const districtName = districtElem.options[districtElem.selectedIndex].text;
+            const total = document.getElementById('cart-total').innerText;
+            
+            const randomId = "MRC-" + Math.floor(1000 + Math.random() * 9000);
+
+            const receipt = document.getElementById('receipt-details');
+            receipt.innerHTML = `
+                <p><strong>Order ID:</strong> <span class="text-amber-600 font-bold">${randomId}</span></p>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Phone:</strong> ${phone}</p>
+                <p><strong>District:</strong> ${districtName}</p>
+                <p><strong>Address:</strong> ${address}</p>
+                <p><strong>Total Paid (incl. Delivery):</strong> <span class="text-amber-600 font-bold">${total}</span></p>
+            `;
+
+            closeCheckout();
+            document.getElementById('success-modal').classList.add('hidden');
+            document.getElementById('success-modal').classList.remove('hidden');
+            
+            cart = [];
+            discountApplied = false;
+            updateCartUI();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        // Initial Load
+        renderProducts(products);
+    </script>
+</body>
+</html>
